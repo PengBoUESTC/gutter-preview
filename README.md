@@ -1,4 +1,10 @@
-# Image Preview - Visual Studio Code Extension
+# Image Preview Plus - Visual Studio Code Extension
+
+forked from Image Preview , support for `scss` file 
+
+add ![postcss-url-patch](https://github.com/PengBoUESTC/postcss-url-patch) plugin
+
+and U can use `urlPatch`(JSON string) to config `postcss-url-patch` plugin
 
 Shows image preview in the gutter and on hover
 
