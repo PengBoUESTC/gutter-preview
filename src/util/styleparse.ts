@@ -4,6 +4,7 @@ import postcss from 'postcss'
 import sass from 'sass'
 import { fileURLToPath } from 'url';
 import { postcssUrlPatch } from 'postcss-url-patch';
+import { ImageInfoRequest } from '../common/protocol';
 
 const getLineMap = (smc: SourceMapConsumer) => {
   const result =  {}
@@ -16,7 +17,7 @@ const getLineMap = (smc: SourceMapConsumer) => {
 
 
 
-export const styleParse = (document: TextDocument, urlPatchConfig: string): Promise<{
+export const styleParse = (document: TextDocument, request: ImageInfoRequest): Promise<{
   text: string,
   lineConvert: (line: number) => number 
 }> => {
@@ -26,11 +27,14 @@ export const styleParse = (document: TextDocument, urlPatchConfig: string): Prom
     text: txt,
     lineConvert: line => line
   })
-
-  const { css, sourceMap } = sass.compile(url, { sourceMap: true, style: 'expanded', sourceMapIncludeSources: true })
+  const additionalData = JSON.parse(request.additionalData).reduce((res, item) => {
+    return `${res} @import "${item}";`
+  }, '')
+  const codeStr = `${additionalData}\n${txt}`
+  const { css, sourceMap } = sass.compileString(txt, { sourceMap: true, style: 'expanded', sourceMapIncludeSources: true })
   const map1 = getLineMap(new SourceMapConsumer(sourceMap))
 
-  return postcss([postcssUrlPatch(JSON.parse(urlPatchConfig))])
+  return postcss([postcssUrlPatch(JSON.parse(request.urlPatch))])
   .process(css, { map: { inline: false, sourcesContent: true } })
   .then(res => {
     const { css, map } = res

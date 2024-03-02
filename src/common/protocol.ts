@@ -20,6 +20,7 @@ export interface ImageInfoRequest {
         [alias: string]: string | string[];
     };
     urlPatch: string
+    additionalData: string
 }
 
 export const GutterPreviewImageRequestType: RequestType<ImageInfoRequest, ImageInfoResponse, any> = new RequestType(

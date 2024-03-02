@@ -11,6 +11,7 @@ gruntfile.js
 tsconfig.json
 vsc-extension-quickstart.md
 testfiles.scss
+a.scss
 node_modules
 .devcontainer
 webpack.config.js

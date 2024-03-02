@@ -142,6 +142,7 @@ export function activate(context: ExtensionContext) {
                         additionalSourcefolder: getConfiguredProperty(document, 'sourceFolder', ''),
                         paths: paths,
                         urlPatch: getConfiguredProperty(document, 'urlPatch', "{}"),
+                        additionalData: getConfiguredProperty(document, 'additionalData',"[]"),
                     },
                     token
                 );

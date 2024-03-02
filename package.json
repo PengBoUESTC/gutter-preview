@@ -5,7 +5,7 @@
   "author": "pengbo",
   "publisher": "pengboUESTC",
   "license": "MIT",
-  "version": "1.30.0",
+  "version": "1.30.2",
   "displayName": "Image preview Plus",
   "icon": "images/logo.png",
   "engines": {
@@ -84,6 +84,12 @@
           "scope": "resource",
           "description": "postcss-url-patch config",
           "type": "string"
+        },
+        "gutterpreview.additionalData": {
+          "default": "[]",
+          "scope": "resource",
+          "description": "postcss-url-patch config",
+          "type": "array"
         }
       }
     }
