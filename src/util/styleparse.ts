@@ -1,11 +1,9 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { SourceMapConsumer } from 'source-map-js'
 import postcss from 'postcss'
-import postcssrc from 'postcss-load-config'
 import sass from 'sass'
 import { fileURLToPath } from 'url';
-import { parse } from 'path'
-import autoprefixer from 'autoprefixer'
+import { postcssUrlPatch } from 'postcss-url-patch';
 
 const getLineMap = (smc: SourceMapConsumer) => {
   const result =  {}
@@ -16,19 +14,14 @@ const getLineMap = (smc: SourceMapConsumer) => {
   return result
 }
 
-const getPostcssPlugin = (dir: string) => {
-  // const configDir = parse(dir).dir
-  // return postcssrc({}, dir).then(res => res.plugins).catch(() => [])
-  return Promise.resolve([])
-}
 
-export const styleParse = (document: TextDocument): Promise<{
+
+export const styleParse = (document: TextDocument, urlPatchConfig: string): Promise<{
   text: string,
   lineConvert: (line: number) => number 
 }> => {
   const txt = document.getText()
   const url = fileURLToPath(document.uri)
-
   if(!url.endsWith('.scss')) return Promise.resolve({
     text: txt,
     lineConvert: line => line
@@ -37,7 +30,7 @@ export const styleParse = (document: TextDocument): Promise<{
   const { css, sourceMap } = sass.compile(url, { sourceMap: true, style: 'expanded', sourceMapIncludeSources: true })
   const map1 = getLineMap(new SourceMapConsumer(sourceMap))
 
-  return postcss([])
+  return postcss([postcssUrlPatch(JSON.parse(urlPatchConfig))])
   .process(css, { map: { inline: false, sourcesContent: true } })
   .then(res => {
     const { css, map } = res

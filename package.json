@@ -78,6 +78,12 @@
           "scope": "resource",
           "description": "A flag which indicates whether resources should be resolved from references",
           "type": "boolean"
+        },
+        "gutterpreview.urlPatch": {
+          "default": "{}",
+          "scope": "resource",
+          "description": "postcss-url-patch config",
+          "type": "string"
         }
       }
     }
@@ -109,7 +115,7 @@
     "image-size": "^1.0.1",
     "node-fetch": "^2.6.7",
     "postcss": "^8.4.35",
-    "postcss-load-config": "^5.0.3",
+    "postcss-url-patch": "^0.3.1",
     "sass": "^1.71.1",
     "slash": "^3.0.0",
     "tmp": "^0.2.1",
