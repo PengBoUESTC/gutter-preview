@@ -29,7 +29,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Image Preview configuration",
+      "title": "Image Preview Plus configuration",
       "properties": {
         "gutterpreview.sourceFolder": {
           "default": "src",
