@@ -97,10 +97,11 @@ async function collectEntries(
     absoluteUrlMappers.forEach((absoluteUrlMapper) =>
         absoluteUrlMapper.refreshConfig(request.workspaceFolder, request.additionalSourcefolder, request.paths)
     );
-    const txt = await styleParse(document)
-    const lines = txt.split(/\r\n|\r|\n/);
+    const { text, lineConvert } = await styleParse(document)
+    const lines = text.split(/\r\n|\r|\n/);
     for (const lineIndex of request.visibleLines) {
-        var line = lines[lineIndex];
+        const l = lineConvert(lineIndex + 1) - 1
+        var line = lines[l];
         if (!line) continue;
         if (cancellationToken.isCancellationRequested) return items;
         if (line.length > 20000) {
