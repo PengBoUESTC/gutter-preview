@@ -10,7 +10,7 @@ gruntfile.js
 .gitignore
 tsconfig.json
 vsc-extension-quickstart.md
-testfiles
+testfiles.scss
 node_modules
 .devcontainer
 webpack.config.js

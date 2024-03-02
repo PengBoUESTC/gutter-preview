@@ -20,6 +20,7 @@ import { acceptedExtensions } from '../util/acceptedExtensions';
 import { absoluteUrlMappers } from '../mappers';
 import { recognizers } from '../recognizers';
 import { nonNullOrEmpty } from '../util/stringutil';
+import { styleParse } from '../util/styleparse';
 
 import { ImageCache } from '../util/imagecache';
 import { UrlMatch } from '../recognizers/recognizer';
@@ -96,10 +97,11 @@ async function collectEntries(
     absoluteUrlMappers.forEach((absoluteUrlMapper) =>
         absoluteUrlMapper.refreshConfig(request.workspaceFolder, request.additionalSourcefolder, request.paths)
     );
-
-    const lines = document.getText().split(/\r\n|\r|\n/);
+    const { text, lineConvert } = await styleParse(document, request.urlPatch)
+    const lines = text.split(/\r\n|\r|\n/);
     for (const lineIndex of request.visibleLines) {
-        var line = lines[lineIndex];
+        const l = lineConvert(lineIndex + 1) - 1
+        var line = lines[l];
         if (!line) continue;
         if (cancellationToken.isCancellationRequested) return items;
         if (line.length > 20000) {

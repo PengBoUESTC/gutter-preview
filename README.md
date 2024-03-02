@@ -1,16 +1,20 @@
-# Image Preview - Visual Studio Code Extension
+# Image Preview Plus - Visual Studio Code Extension
+
+forked from Image Preview , support for `scss` file 
+
+add [postcss-url-patch](https://github.com/PengBoUESTC/postcss-url-patch) plugin
+
+and U can use `urlPatch`(JSON string) to config `postcss-url-patch` plugin
 
 Shows image preview in the gutter and on hover
 
 ## It looks like this
 
-![Demonstrating svg image preview in a css file](https://raw.githubusercontent.com/kisstkondoros/gutter-preview/master/images/sample.png)
+![Demonstrating svg image preview in a css file](./images/sample.png)
 
 ## Install
 
-[How to install Visual Studio Code extensions](https://code.visualstudio.com/docs/editor/extension-gallery)
-
-[Direct link to Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=kisstkondoros.vscode-gutter-preview)
+search [image preview plus] in vscode
 
 ### Change Log
 
