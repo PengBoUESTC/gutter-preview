@@ -53,14 +53,15 @@ export const styleParse = (document: TextDocument, request: ImageInfoRequest): P
   text: string,
   lineConvert: (line: number) => number 
 }> => {
-  const { urlPatch: urlPatchConfig, styleAlias } = request
+  const { urlPatch: urlPatchConfig, styleAlias, additionStyle } = request
   const txt = document.getText()
   const url = fileURLToPath(document.uri)
   if(!url.endsWith('.scss')) return Promise.resolve({
     text: txt,
     lineConvert: line => line
   })
-  const { css, sourceMap } = sass.compile(url, {
+  const addtionText = `${additionStyle.join(';')}; ${txt}`
+  const { css, sourceMap } = sass.compileString(addtionText, {
     sourceMap: true,
     style: 'expanded',
     sourceMapIncludeSources: true,
