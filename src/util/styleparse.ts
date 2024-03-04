@@ -4,6 +4,10 @@ import postcss from 'postcss'
 import sass from 'sass'
 import { fileURLToPath } from 'url';
 import { postcssUrlPatch } from 'postcss-url-patch';
+import { readFileSync } from 'fs';
+import { extname } from 'path';
+import { pathToFileURL, URL } from 'url';
+import { ImageInfoRequest } from '../common/protocol';
 
 const getLineMap = (smc: SourceMapConsumer) => {
   const result =  {}
@@ -14,23 +18,60 @@ const getLineMap = (smc: SourceMapConsumer) => {
   return result
 }
 
+const getAlias = (base: string, url: string) => {
+  const arrs = url.split(base)
+  arrs.pop()
+  arrs.push(base)
+  return arrs.join('')
+}
 
+const genImporter = (styleAlias: Record<string, string>, url: string) => {
+  const entries = Object.entries(styleAlias)
 
-export const styleParse = (document: TextDocument, urlPatchConfig: string): Promise<{
+  return {
+		canonicalize(requestedUrl): URL | null {
+			return entries.reduce<URL | null>((resolved, [alias, path]) => {
+				if (resolved) return resolved;
+				if (requestedUrl.startsWith(alias)) return pathToFileURL(requestedUrl.replace(alias, getAlias(path, url)));
+				return null;
+			}, null);
+		},
+		load(canonicalUrl) {
+			const filepath = fileURLToPath(canonicalUrl);
+			const extension = extname(filepath).replace('.', '');
+			const contents = readFileSync(filepath).toString();
+
+			return {
+				syntax: (extension === 'sass' ? 'indented' : extension),
+				contents,
+			};
+		},
+	};
+}
+
+export const styleParse = (document: TextDocument, request: ImageInfoRequest): Promise<{
   text: string,
   lineConvert: (line: number) => number 
 }> => {
+  const { urlPatch: urlPatchConfig, styleAlias } = request
   const txt = document.getText()
   const url = fileURLToPath(document.uri)
   if(!url.endsWith('.scss')) return Promise.resolve({
     text: txt,
     lineConvert: line => line
   })
-
-  const { css, sourceMap } = sass.compile(url, { sourceMap: true, style: 'expanded', sourceMapIncludeSources: true })
+  const { css, sourceMap } = sass.compile(url, {
+    sourceMap: true,
+    style: 'expanded',
+    sourceMapIncludeSources: true,
+    importers: [
+      // @ts-ignore
+      genImporter(styleAlias, url),
+    ]
+  })
   const map1 = getLineMap(new SourceMapConsumer(sourceMap))
 
-  return postcss([postcssUrlPatch(JSON.parse(urlPatchConfig))])
+  return postcss([postcssUrlPatch(urlPatchConfig)])
   .process(css, { map: { inline: false, sourcesContent: true } })
   .then(res => {
     const { css, map } = res

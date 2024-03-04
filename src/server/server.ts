@@ -97,7 +97,7 @@ async function collectEntries(
     absoluteUrlMappers.forEach((absoluteUrlMapper) =>
         absoluteUrlMapper.refreshConfig(request.workspaceFolder, request.additionalSourcefolder, request.paths)
     );
-    const { text, lineConvert } = await styleParse(document, request.urlPatch)
+    const { text, lineConvert } = await styleParse(document, request)
     const lines = text.split(/\r\n|\r|\n/);
     for (const lineIndex of request.visibleLines) {
         const l = lineConvert(lineIndex + 1) - 1

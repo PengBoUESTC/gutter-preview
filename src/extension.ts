@@ -141,7 +141,8 @@ export function activate(context: ExtensionContext) {
                         currentColor: getConfiguredProperty(document, 'currentColorForSVG', ''),
                         additionalSourcefolder: getConfiguredProperty(document, 'sourceFolder', ''),
                         paths: paths,
-                        urlPatch: getConfiguredProperty(document, 'urlPatch', "{}"),
+                        urlPatch: getConfiguredProperty(document, 'urlPatch', {}),
+                        styleAlias: getConfiguredProperty(document, 'styleAlias', {}),
                     },
                     token
                 );
