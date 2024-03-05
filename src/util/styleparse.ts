@@ -5,7 +5,7 @@ import sass from 'sass'
 import { fileURLToPath } from 'url';
 import { postcssUrlPatch } from 'postcss-url-patch';
 import { readFileSync } from 'fs';
-import { extname } from 'path';
+import { extname, resolve, dirname } from 'path';
 import { pathToFileURL, URL } from 'url';
 import { ImageInfoRequest } from '../common/protocol';
 
@@ -49,6 +49,27 @@ const genImporter = (styleAlias: Record<string, string>, url: string) => {
 	};
 }
 
+const genRelaImporter = (parentUrl: string) => {
+  return {
+		canonicalize(requestedUrl): URL | null {
+      // requestedUrl
+      const absoPath = resolve(dirname(parentUrl), requestedUrl)
+      if (requestedUrl.startsWith('.')) return pathToFileURL(absoPath);
+      return null;
+		},
+		load(canonicalUrl) {
+			const filepath = fileURLToPath(canonicalUrl);
+			const extension = extname(filepath).replace('.', '');
+			const contents = readFileSync(filepath).toString();
+
+			return {
+				syntax: (extension === 'sass' ? 'indented' : extension),
+				contents,
+			};
+		},
+	};
+}
+
 export const styleParse = (document: TextDocument, request: ImageInfoRequest): Promise<{
   text: string,
   lineConvert: (line: number) => number 
@@ -66,13 +87,15 @@ export const styleParse = (document: TextDocument, request: ImageInfoRequest): P
     sourceMapIncludeSources: true,
     importers: [
       // @ts-ignore
+      genRelaImporter(url),
+      // @ts-ignore
       genImporter(styleAlias, url),
     ]
   })
   const map1 = getLineMap(new SourceMapConsumer(sourceMap))
 
   return postcss([postcssUrlPatch(urlPatchConfig)])
-  .process(css, { map: { inline: false, sourcesContent: true } })
+  .process(css, { map: { inline: false, sourcesContent: true }, to: undefined })
   .then(res => {
     const { css, map } = res
     const map2 = getLineMap(new SourceMapConsumer(map.toJSON()))
