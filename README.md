@@ -1,10 +1,49 @@
 # Image Preview Plus - Visual Studio Code Extension
 
-forked from Image Preview , support for `scss` file 
+forked from Image Preview , support for `scss` file
 
 add [postcss-url-patch](https://github.com/PengBoUESTC/postcss-url-patch) plugin
 
-and U can use `urlPatch`(JSON string) to config `postcss-url-patch` plugin
+## about projectConfig
+
+```javascript
+// projectConfig: Record<string, {
+//     urlPatch: Record<string, string>
+//     styleAlias: Record<string, string>
+//     additionStyle: string[]
+// }>
+
+"gutter-preview": {
+    "urlPatch": {
+        "rules": [
+            {
+            "base": "https://a.com",
+            },
+        ]
+    },
+    "styleAlias": {
+        "@": "gutter-preview",
+    },
+    "additionStyle": [
+        "@import '~@/theme/mixins.scss'",
+    ],
+}
+```
+
+-   `urlPatch` is used for `postcss-url-patch` plugin
+
+-   `styleAlias` is the path alias
+    ```javascript
+    styleAlias: {
+        "@": "gutter-preview"
+    }
+    ```
+-   `additionStyle` can be used to add global style for style file
+    ```javascript
+    "additionStyle": [
+        "@import '@/theme/mixins.scss'",
+    ],
+    ```
 
 Shows image preview in the gutter and on hover
 
