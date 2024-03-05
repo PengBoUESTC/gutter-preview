@@ -143,6 +143,7 @@ export function activate(context: ExtensionContext) {
                         paths: paths,
                         urlPatch: getConfiguredProperty(document, 'urlPatch', {}),
                         styleAlias: getConfiguredProperty(document, 'styleAlias', {}),
+                        additionStyle: getConfiguredProperty(document, 'additionStyle', []),
                     },
                     token
                 );

@@ -21,6 +21,7 @@ export interface ImageInfoRequest {
     };
     urlPatch: Record<string, string>
     styleAlias: Record<string, string>
+    additionStyle: string[]
 }
 
 export const GutterPreviewImageRequestType: RequestType<ImageInfoRequest, ImageInfoResponse, any> = new RequestType(

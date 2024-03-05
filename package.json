@@ -90,6 +90,12 @@
           "scope": "resource",
           "description": "style alias",
           "type": "object"
+        },
+        "gutterpreview.additionStyle": {
+          "default": [],
+          "scope": "resource",
+          "description": "style alias",
+          "type": "array"
         }
       }
     }
