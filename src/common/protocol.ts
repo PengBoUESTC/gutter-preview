@@ -19,9 +19,11 @@ export interface ImageInfoRequest {
     paths: {
         [alias: string]: string | string[];
     };
-    urlPatch: Record<string, string>
-    styleAlias: Record<string, string>
-    additionStyle: string[]
+    projectConfig: Record<string, {
+        urlPatch: Record<string, string>
+        styleAlias: Record<string, string>
+        additionStyle: string[]
+    }>
 }
 
 export const GutterPreviewImageRequestType: RequestType<ImageInfoRequest, ImageInfoResponse, any> = new RequestType(

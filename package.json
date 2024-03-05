@@ -79,23 +79,11 @@
           "description": "A flag which indicates whether resources should be resolved from references",
           "type": "boolean"
         },
-        "gutterpreview.urlPatch": {
+        "gutterpreview.projectConfig": {
           "default": {},
           "scope": "resource",
-          "description": "postcss-url-patch config",
+          "description": "project config { [project]: { urlPatch: {}, styleAlias: {}, additionStyle: [] } }",
           "type": "object"
-        },
-        "gutterpreview.styleAlias": {
-          "default": {},
-          "scope": "resource",
-          "description": "style alias",
-          "type": "object"
-        },
-        "gutterpreview.additionStyle": {
-          "default": [],
-          "scope": "resource",
-          "description": "style alias",
-          "type": "array"
         }
       }
     }

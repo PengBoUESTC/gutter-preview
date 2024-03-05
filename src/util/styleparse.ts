@@ -54,8 +54,7 @@ const genRelaImporter = (parentUrl: string) => {
 		canonicalize(requestedUrl): URL | null {
       // requestedUrl
       const absoPath = resolve(dirname(parentUrl), requestedUrl)
-      if (requestedUrl.startsWith('.')) return pathToFileURL(absoPath);
-      return null;
+      return pathToFileURL(absoPath);
 		},
 		load(canonicalUrl) {
 			const filepath = fileURLToPath(canonicalUrl);
@@ -74,9 +73,11 @@ export const styleParse = (document: TextDocument, request: ImageInfoRequest): P
   text: string,
   lineConvert: (line: number) => number 
 }> => {
-  const { urlPatch: urlPatchConfig, styleAlias, additionStyle } = request
   const txt = document.getText()
   const url = fileURLToPath(document.uri)
+  const configsKey = Object.keys(request.projectConfig).find(key => url.includes(key))
+  const { urlPatch: urlPatchConfig = {}, styleAlias = {}, additionStyle =[] } = request.projectConfig[configsKey] || {}
+
   if(!url.endsWith('.scss')) return Promise.resolve({
     text: txt,
     lineConvert: line => line
@@ -88,9 +89,9 @@ export const styleParse = (document: TextDocument, request: ImageInfoRequest): P
     sourceMapIncludeSources: true,
     importers: [
       // @ts-ignore
-      genRelaImporter(url),
-      // @ts-ignore
       genImporter(styleAlias, url),
+      // @ts-ignore
+      genRelaImporter(url),
     ]
   })
   const map1 = getLineMap(new SourceMapConsumer(sourceMap))
