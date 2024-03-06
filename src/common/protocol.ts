@@ -23,6 +23,8 @@ export interface ImageInfoRequest {
         urlPatch: Record<string, string>
         styleAlias: Record<string, string>
         additionStyle: string[]
+        convert: string
+        convertTest: string
     }>
 }
 

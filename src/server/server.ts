@@ -34,6 +34,23 @@ console.error = connection.console.error.bind(connection.console);
 let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 documents.listen(connection);
 
+function getUrlConvert(request: ImageInfoRequest, document: TextDocument) {
+    const entries = Object.entries(request.projectConfig)
+    const uri = document.uri
+    let { convert, convertTest } = entries.find(([key, value]) => uri.includes(key))[1] || {}
+    if(!convert) return str => str
+    eval(convert)
+    const testRegx = new RegExp(`${convertTest}\\(`)
+    return (str: string): string => {
+        const execRes = testRegx.exec(str)
+        if(!execRes) return str
+        const start = execRes.index
+        const end = str.slice(start).split('').findIndex(item => item === ')') + start + 1
+        const fnStr = str.substring(start, end).replace(testRegx, 'convert(')
+        return eval(fnStr)
+    }
+};
+
 connection.onInitialize(
     (parameters): InitializeResult => {
         ImageCache.configure(parameters.initializationOptions.storagePath);
@@ -97,11 +114,12 @@ async function collectEntries(
     absoluteUrlMappers.forEach((absoluteUrlMapper) =>
         absoluteUrlMapper.refreshConfig(request.workspaceFolder, request.additionalSourcefolder, request.paths)
     );
+    const convert = getUrlConvert(request, document)
     const { text, lineConvert } = await styleParse(document, request)
     const lines = text.split(/\r\n|\r|\n/);
     for (const lineIndex of request.visibleLines) {
         const l = lineConvert(lineIndex + 1) - 1
-        var line = lines[l];
+        var line = convert(lines[l]);
         if (!line) continue;
         if (cancellationToken.isCancellationRequested) return items;
         if (line.length > 20000) {
